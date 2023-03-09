@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Add Fields Button with Slider Time</title>
+    <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="field.css"/>
+  </head>
+  <body>
+    <div class="whole-container">
+      <div class="wrapper-grid-container">
+        <div class="circle"></div>
+        <div class="wrapper">
+          <div class="range-value">
+            <span id="range1">00:00</span>
+            <span>&#8211;</span>
+            <span id="range2">23:59</span>
+          </div>
+          <div class="container">
+            <div class="slider-track">
+              <input
+                type="range"
+                min="0"
+                max="1439"
+                value="0"
+                id="slider-1"
+                oninput="slideOne()"
+              />
+              <div class="slider-tooltip slider-tooltip-min" id="tooltip-1">
+                00:00
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="1439"
+                value="1439"
+                id="slider-2"
+                oninput="slideTwo()"
+              />
+              <div class="slider-tooltip slider-tooltip-max" id="tooltip-2">
+                23:59
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="paragraphContainer">
+        <p><strong>Dynamic Pricing Options</strong></p>
+        <p>Change your pricing for orders that exceed a certain total order value.</p>
+      </div>
+      <div id="fieldsContainer" class="fields-container"></div>
+      <div class="addFieldsButton-container">
+        <button id="addFieldsButton" class="addFieldsButton">+ Add options</button>
+      </div>
+      <div class="circle2"></div>
+    </div>
+    <script>
+      let sliderOne = document.getElementById("slider-1");
+      let sliderTwo = document.getElementById("slider-2");
+
+      let displayValOne = document.getElementById("range1");
+      let displayValTwo = document.getElementById("range2");
+
+      let minRange = 0;
+
+      let sliderTrack = document.querySelector(".slider-track");
+      let sliderMaxValue = sliderOne.max;
+
+      let tooltipOne = document.getElementById("tooltip-1");
+      let tooltipTwo = document.getElementById("tooltip-2");
+      let globalSliderValue = 0;
+      function slideOne() {
+        if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minRange) {
+          sliderOne.value = parseInt(sliderTwo.value) - minRange;
+        }
+
+        displayValOne.textContent = getFormattedTime(sliderOne.value);
+        tooltipOne.textContent = getFormattedTime(sliderOne.value);
+        globalSliderValue = sliderOne.value;
+        updateTooltipPosition(tooltipOne, sliderOne);
+        fillColor();
+      }
+
+      function slideTwo() {
+        if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minRange) {
+          sliderTwo.value = parseInt(sliderOne.value) + minRange;
+        }
+
+        displayValTwo.textContent = getFormattedTime(sliderTwo.value);
+        tooltipTwo.textContent = getFormattedTime(sliderTwo.value);
+        updateTooltipPosition(tooltipTwo, sliderTwo);
+        fillColor();
+      }
+
+      function fillColor() {
+        let percent1 = (sliderOne.value / sliderMaxValue) * 100;
+        let percent2 = (sliderTwo.value / sliderMaxValue) * 100;
+        sliderTrack.style.background = `linear-gradient(to right, #CCE2F6 ${percent1}%, #4696EC ${percent1}%, #4696EC ${percent2}%, #CCE2F6 ${percent2}%)`;
+      }
+
+      function getFormattedTime(minutes) {
+        let hours = Math.floor(minutes / 60);
+        let mins = minutes % 60;
+        return (
+          (hours < 10 ? "0" : "") + hours + ":" + (mins < 10 ? "0" : "") + mins
+        );
+      }
+
+      function updateSliderValue() {
+        let localTime = new Date().toLocaleTimeString("en-US", {
+          timeZone: "Asia/Manila",
+          hour12: false,
+        });
+        let [hours, minutes] = localTime.split(":").map(Number);
+        let currentMinutes = hours * 60 + minutes;
+        globalSliderValue = currentMinutes;
+        sliderOne.value = currentMinutes;
+        sliderTwo.value = sliderMaxValue;
+        displayValOne.textContent = getFormattedTime(currentMinutes);
+        displayValTwo.textContent = getFormattedTime(sliderMaxValue);
+        tooltipOne.textContent = getFormattedTime(currentMinutes);
+        tooltipTwo.textContent = getFormattedTime(sliderMaxValue);
+        updateTooltipPosition(tooltipOne, sliderOne);
+        updateTooltipPosition(tooltipTwo, sliderTwo);
+        slideOne();
+        slideTwo();
+      }
+
+      function updateTooltipPosition(tooltip, slider) {
+        let percent = (slider.value / sliderMaxValue) * 100;
+        let tooltipWidth = tooltip.offsetWidth;
+        let trackWidth = sliderTrack.offsetWidth;
+        let tooltipPosition = percent * (trackWidth / 100);
+
+        tooltip.style.left = `calc(${percent}% - ${tooltipWidth / 2}px)`;
+      }
+
+      // Update slider value every minute
+      setInterval(updateSliderValue, 10000);
+      sliderOne.addEventListener("input", slideOne);
+      sliderTwo.addEventListener("input", slideTwo);
+
+      // Set initial slider value
+      updateSliderValue();
+
+      var addButton = document.getElementById("addFieldsButton");
+      var container = document.getElementById("fieldsContainer");
+      var fieldIndex = 0;
+
+      addButton.addEventListener("click", () => {
+        const fieldId = `field_${fieldIndex}`;
+
+        // Create the field container
+        const fieldContainer = document.createElement("div");
+        fieldContainer.id = fieldId;
+        fieldContainer.className = "field-container";
+
+        // Create the label container
+        const labelContainer = document.createElement("div");
+        labelContainer.className = "label-container";
+
+        // Create the label element
+        const label = document.createElement("label");
+        label.innerHTML = `Time`;
+        label.className = "field-label";
+        labelContainer.appendChild(label);
+
+        const label2 = document.createElement("label");
+        label2.innerHTML = `Total Order`;
+        label2.className = "field-label";
+        labelContainer.appendChild(label2);
+        
+        const label3 = document.createElement("label");
+        label3.innerHTML = `Amount`;
+        label3.className = "field-label";
+        labelContainer.appendChild(label3);
+
+        // Append the label container to the field container
+        fieldContainer.appendChild(labelContainer);
+
+        // Create the input container
+        const inputContainer = document.createElement("div");
+        inputContainer.className = "input-container";
+
+        // Create the third number input field
+        const number3 = document.createElement("input");
+        number3.type = "time";
+        number3.id = `${fieldId}_number3`;
+        number3.className = "time-input";
+        number3.placeholder = "0.00";
+        number3.value = getFormattedTime(globalSliderValue); // Set the initial value to the current time
+        inputContainer.appendChild(number3);
+
+        // Create the first number input field
+        const number1 = document.createElement("input");
+        number1.type = "number";
+        number1.id = `${fieldId}_number1`;
+        number1.className = "number-input";
+        number1.placeholder = "0.00";
+        inputContainer.appendChild(number1);
+
+        // Create the second number input field
+        const number2 = document.createElement("input");
+        number2.type = "number";
+        number2.id = `${fieldId}_number2`;
+        number2.className = "number-input";
+        number2.placeholder = "0.00";
+        inputContainer.appendChild(number2);
+
+        // Create the delete button
+        const deleteButton = document.createElement("button");
+        deleteButton.innerHTML = "X";
+        deleteButton.className = "delete-button";
+        deleteButton.addEventListener("click", () => {
+          container.removeChild(fieldContainer);
+        });
+        inputContainer.appendChild(deleteButton);
+
+        // Append the input container to the field container
+        fieldContainer.appendChild(inputContainer);
+
+        // Add the field container to the fields container
+        container.appendChild(fieldContainer);
+
+        // Increment the field index
+        fieldIndex++;
+      });
+    </script>
+  </body>
+</html>

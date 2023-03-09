@@ -1,0 +1,97 @@
+  * 
+  {
+    font-family: "Montserrat";
+  }
+  body{
+    background-color: rgb(145, 192, 255);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  .paragraphContainer{
+    width: 358.75px;
+    margin: auto;
+  }
+  .paragraphContainer p{
+    font-size: 10px;
+    margin-bottom: 2px;
+  }
+  /* Style the fields container */
+  .fields-container {
+    margin-top: 10px;
+    padding: 2px;
+    gap: 10px;
+  }
+
+  /* Style the field container */
+  .field-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: intrinsic; /* Safari/WebKit uses a non-standard name */
+    width: -moz-max-content; /* Firefox/Gecko */
+    width: -webkit-max-content; /* Chrome */
+    width: max-content;
+    margin: auto auto 10px;
+  }
+
+  /* Style the label element */
+  .field-label {
+    font-size: small;
+    margin-right: 10px;
+  }
+
+  .label-container{
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .label-container .field-label{
+    width: 100px;
+    margin-bottom: 3px;
+  }
+
+  .input-container{
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .input-container input::placeholder{
+    padding-left: 5px;
+  }
+
+  /* Style the number input fields */
+  .number-input, .time-input {
+    width: 100px;
+    margin-right: 10px;
+  }
+
+  /* Style the delete button */
+  .delete-button {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .addFieldsButton-container{
+    display: flex;
+    justify-content: flex-start;
+    margin: auto;
+    width: 358.75px;
+    margin-top: 10px;
+  }
+
+  .addFieldsButton {
+    color: #ffffff;
+    font-weight: 600;
+    padding: 10px 20px;
+    background-color: rgb(52, 113, 255);
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+  }
